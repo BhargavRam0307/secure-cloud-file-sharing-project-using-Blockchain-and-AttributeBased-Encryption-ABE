@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% comment %} <link rel="stylesheet" href="style.css"> {% endcomment %}
+    <style>
+      	*{
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			font-family: Helvetica;
+        }
+        
+        html,body{
+            width: 100%;
+            height: 100%;
+        }
+        
+        #main{
+            width: fit-content;
+            height: 100%;
+            display: flex;
+            /* flex-shrink: 1; */
+            overflow-x:hidden;
+            scroll-behavior: smooth;
+            /* background-color: #000; */
+            
+        }
+        body::-webkit-scrollbar{
+            display: none;
+        }
+        .card{
+            width: 100vw;
+            max-width: 100vw;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid black;
+            position: relative;
+        }
+        #register-container{
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: fit-content;
+            border: 1px solid #000;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            user-select:none;
+            /* background-color: #fff; */
+            color: #000;
+            /* overflow: hidden; */
+        }
+        form h2{
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .register-container form{
+            width: 100%;
+        
+        }
+        form input{
+            width: 100%;
+            padding: 7px;
+            margin: 8px 0;
+            border: 1px solid #000;
+            border-radius: 7px;
+            background-color: #fff;
+            color: #000;
+            font-size: 18px;
+        }
+        #register-container h2 {
+            font-size: 30px;
+            margin-bottom: 30px;
+        }
+        form button{
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid black;
+            background-color: #000;
+            color: #fff;
+            transition: all 0.4s ease-in;
+            border-radius: 20px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        form button:hover{
+            background-color: white;
+            color: black;
+        }
+        .toggle{
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        .toggle a{
+            /* font-weight: 600; */
+            cursor: pointer;
+			color: #000;
+            text-decoration: underline;
+        }
+        .toggle a:hover{
+            font-weight: 600;
+        }
+        .messages {
+            position: fixed; /* Keep it fixed at the top */
+            top: 20px; /* Distance from the top */
+            left: 50%; /* Start at the horizontal middle */
+            transform: translateX(-50%); /* Shift left by half its own width to center */
+            width: 80%; /* Adjust width as needed, e.g., 80% or 500px */
+            max-width: 600px; /* Optional: maximum width */
+            z-index: 1050; /* Ensure it's above most other content */
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        /* Individual message styling (Combine with previous styling) */
+        .messages li {
+            position: relative; /* Needed for absolute positioning of the button */
+            padding: 15px;
+            padding-right: 40px; /* Add space for the close button */
+            margin-bottom: 10px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: Add a subtle shadow */
+        }
+        
+        /* Close button ('x') styling */
+        .messages li button.close-message {
+            position: absolute; /* Position relative to the parent li */
+            top: 5px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 1.5em; /* Make the 'x' bigger */
+            line-height: 1; /* Adjust line height for better vertical alignment */
+            color: inherit; /* Inherit color from the message type (success, error, etc.) */
+            opacity: 0.7;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .messages li button.close-message:hover {
+            opacity: 1;
+        }
+        
+        
+        /* Keep your existing styles for different message types */
+        .messages li.success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        
+        .messages li.error {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        
+        .messages li.warning {
+            color: #856404;
+            background-color: #fff3cd;
+            border-color: #ffeeba;
+        }
+        
+        .messages li.info {
+            color: #0c5460;
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+        }
+    </style>
+    <title>Register</title>
+</head>
+<body>
+    <div id="main">
+        {% if messages %}
+            <ul class="messages" style="list-style: none; padding: 0;">
+                {% for message in messages %}
+                    {# The message.tags controls the CSS class (e.g., "success", "warning", "error") #}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}
+                        style="padding: 10px; margin-bottom: 10px; border: 1px solid; border-radius: 4px;">
+
+                        {{ message }}
+
+                        {# Optional: Add a little 'x' button to dismiss the alert #}
+                        <button type="button"
+                                style="float: right; background: none; border: none; font-size: 1.2em; cursor: pointer;"
+                                onclick="this.parentElement.style.display='none';">&times;</button>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+            <div class="card" id="card1">
+                <div id="register-container">
+                    <form method="post" action="{% url 'register' %}">
+                        {% csrf_token %}
+                        <h2 name="my_heading" id="my_heading">Register</h2>
+                        <input type="text" name="name" placeholder="Name" id="name" required autocomplete>
+                        <input type="text" name="username" placeholder="Username" id="username" required autocomplete>
+                        <input type="email" name="email" id="email" placeholder="E-mail" required autocomplete>
+                        <input type="password" placeholder="Password" name="password" id="password" required>
+                        <input type="text" name="department" id="department" placeholder="Department" required>
+                        <input type="text" name="subscription" id="subscription" placeholder="Subscription Period" required autocomplete>
+                        <input type="password" placeholder="Etherum private key" name="etherun_private_key" id="etherun_private_key" required>
+                        <button type="submit">Register</button>
+                    </form>
+                    <p class="toggle">Already have an account? <a href="login">Login</a></p>
+                    
+                </div>
+            </div>
+    </div>
+
+</body>
+</html>
